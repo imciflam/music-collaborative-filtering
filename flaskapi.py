@@ -7,8 +7,6 @@ from scipy import sparse
 from fuzzywuzzy import fuzz
 import pickle
 
-knn = [{"id": 1, "name": "Company One"}, {"id": 2, "name": "Company Two"}]
-
 api = Flask(__name__)
 
 
@@ -24,11 +22,14 @@ def get_companies():
         open('nn_model.sav', 'rb'))
     closest_groups = print_artist_recommendations(
         'The Prodigy', wide_artist_data_zero_one, model_nn_binary, k=10)
-    return json.dumps("")
+
+    return json.dumps(closest_groups)
 
 
 def print_artist_recommendations(query_artist, artist_plays_matrix, knn_model, k):
     query_index = None
+    # list1 = {}
+    list_of_closest_groups = []
     ratio_tuples = []
     for i in artist_plays_matrix.index:
         ratio = fuzz.ratio(i.lower(), query_artist.lower())
@@ -56,8 +57,13 @@ def print_artist_recommendations(query_artist, artist_plays_matrix, knn_model, k
         else:
             print('{0}: {1}, with distance of {2}:'.format(
                 i, artist_plays_matrix.index[indices.flatten()[i]], distances.flatten()[i]))
+            # list1[artist_plays_matrix.index[indices.flatten()[i]]] = distances.flatten()[
+            #    i]
+            list_of_closest_groups.append(
+                artist_plays_matrix.index[indices.flatten()[i]])
+    return list_of_closest_groups
 
-    return None
+    # return None
 
 
 if __name__ == '__main__':
