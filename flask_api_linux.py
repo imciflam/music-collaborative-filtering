@@ -9,6 +9,7 @@ import pickle
 import time
 from numba import jit
 import modin.pandas as pd
+import pandas as pd_for_pivoting
 
 # os.environ["MODIN_ENGINE"] = "dask"
 
