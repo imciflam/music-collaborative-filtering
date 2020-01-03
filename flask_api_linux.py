@@ -9,7 +9,6 @@ import pickle
 import time
 from numba import jit
 import modin.pandas as pd
-import pandas as pd_for_pivoting
 
 # os.environ["MODIN_ENGINE"] = "dask"
 
@@ -19,7 +18,7 @@ app = Flask(__name__)
 @app.route('/knn', methods=['GET', 'POST'])
 def get_groups():
     # print(request.json)  # getting json
-    rus_data = pd_for_pivoting.read_csv('well.tsv', sep='\t')
+    rus_data = pd.read_csv('well.tsv', sep='\t')
     # artists = rows, users = columns
     wide_artist_data_zero_one = data_processing(rus_data)
     model_nn_binary = pickle.load(
@@ -36,7 +35,7 @@ def data_processing(rus_data):
     wide_artist_data1 = rus_data.pivot(
         index='artist-name', columns='users', values='plays')
     print(time.process_time() - start)
-    wide_artist_data = pd.wide_artist_data1.fillna(0)
+    wide_artist_data = wide_artist_data1.fillna(0)
     # applying the sign function in numpy to each column in the dataframe
     print(time.process_time() - start)
     wide_artist_data_zero_one = wide_artist_data.apply(np.sign)
