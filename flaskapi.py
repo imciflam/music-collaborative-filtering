@@ -1,5 +1,5 @@
 from flask import Flask, json, request
-import pandas as pd
+import pandas as old_pd
 import numpy as np
 from scipy.sparse import csr_matrix
 from sklearn.neighbors import NearestNeighbors
@@ -8,7 +8,9 @@ from fuzzywuzzy import fuzz
 import pickle
 import time
 from numba import jit
+# import modin.pandas as pd
 
+# os.environ["MODIN_ENGINE"] = "dask"
 
 app = Flask(__name__)
 
@@ -16,12 +18,9 @@ app = Flask(__name__)
 @app.route('/knn', methods=['GET', 'POST'])
 def get_groups():
     # print(request.json)  # getting json
-    start = time.process_time()
-    rus_data = pd.read_csv('well.tsv', sep='\t')
-    print(time.process_time() - start)
+    rus_data = old_pd.read_csv('well.tsv', sep='\t')
     # artists = rows, users = columns
     wide_artist_data_zero_one = data_processing(rus_data)
-    print(time.process_time() - start)
     model_nn_binary = pickle.load(
         open('nn_model.sav', 'rb'))
     closest_groups = print_artist_recommendations(
@@ -31,10 +30,16 @@ def get_groups():
 
 @jit()
 def data_processing(rus_data):
-    wide_artist_data = rus_data.pivot(
-        index='artist-name', columns='users', values='plays').fillna(0)
+    start = time.process_time()
+    print(time.process_time() - start)
+    wide_artist_data1 = rus_data.pivot(
+        index='artist-name', columns='users', values='plays')
+    print(time.process_time() - start)
+    wide_artist_data = wide_artist_data1.replace(np.nan, 0)
+    print(time.process_time() - start)
     # applying the sign function in numpy to each column in the dataframe
     wide_artist_data_zero_one = wide_artist_data.apply(np.sign)
+    print(time.process_time() - start)
     return wide_artist_data_zero_one
 
 
@@ -84,4 +89,5 @@ def get_empty():
 
 
 if __name__ == '__main__':
+    # freeze_support()
     app.run()
