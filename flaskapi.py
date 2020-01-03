@@ -72,5 +72,10 @@ def print_artist_recommendations(query_artist, artist_plays_matrix, knn_model, k
     # return None
 
 
+@api.route('/knn', methods=['GET'])
+def get_empty():
+	return("")
+
+
 if __name__ == '__main__':
     api.run()

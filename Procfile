@@ -1,1 +1,1 @@
-web: gunicorn flaskapi:app
+python flaskapi.py
