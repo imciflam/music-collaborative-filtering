@@ -7,30 +7,35 @@ from scipy import sparse
 from fuzzywuzzy import fuzz
 import pickle
 import time
+from numba import jit
+
 
 app = Flask(__name__)
 
 
 @app.route('/knn', methods=['GET', 'POST'])
-def get_companies():
-    print(request.json)  # getting json
+def get_groups():
+    # print(request.json)  # getting json
     start = time.process_time()
-    rus_data = pd.read_table('well.tsv')
+    rus_data = pd.read_csv('well.tsv', sep='\t')
     print(time.process_time() - start)
     # artists = rows, users = columns
-    wide_artist_data = rus_data.pivot(
-        index='artist-name', columns='users', values='plays').fillna(0)
-    # applying the sign function in numpy to each column in the dataframe
-    print(time.process_time() - start)
-    wide_artist_data_zero_one = wide_artist_data.apply(np.sign)
+    wide_artist_data_zero_one = data_processing(rus_data)
     print(time.process_time() - start)
     model_nn_binary = pickle.load(
         open('nn_model.sav', 'rb'))
-    print(time.process_time() - start)
     closest_groups = print_artist_recommendations(
         request.json[0], wide_artist_data_zero_one, model_nn_binary, k=10)
-    print(time.process_time() - start)
     return json.dumps(closest_groups)
+
+
+@jit()
+def data_processing(rus_data):
+    wide_artist_data = rus_data.pivot(
+        index='artist-name', columns='users', values='plays').fillna(0)
+    # applying the sign function in numpy to each column in the dataframe
+    wide_artist_data_zero_one = wide_artist_data.apply(np.sign)
+    return wide_artist_data_zero_one
 
 
 def print_artist_recommendations(query_artist, artist_plays_matrix, knn_model, k):
@@ -67,7 +72,7 @@ def print_artist_recommendations(query_artist, artist_plays_matrix, knn_model, k
             # list1[artist_plays_matrix.index[indices.flatten()[i]]] = distances.flatten()[
             #    i]
             list_of_closest_groups.append(
-                artist_plays_matrix.index[indices.flatten()[i]])
+                (artist_plays_matrix.index[indices.flatten()[i]]))
     return list_of_closest_groups
 
     # return None
