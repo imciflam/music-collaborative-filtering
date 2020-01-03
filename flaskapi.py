@@ -6,23 +6,29 @@ from sklearn.neighbors import NearestNeighbors
 from scipy import sparse
 from fuzzywuzzy import fuzz
 import pickle
+import time
 
 api = Flask(__name__)
 
 
 @api.route('/knn', methods=['GET'])
 def get_companies():
+    start = time.process_time()
     rus_data = pd.read_table('well.tsv')
+    print(time.process_time() - start)
     # artists = rows, users = columns
     wide_artist_data = rus_data.pivot(
         index='artist-name', columns='users', values='plays').fillna(0)
     # applying the sign function in numpy to each column in the dataframe
+    print(time.process_time() - start)
     wide_artist_data_zero_one = wide_artist_data.apply(np.sign)
+    print(time.process_time() - start)
     model_nn_binary = pickle.load(
         open('nn_model.sav', 'rb'))
+    print(time.process_time() - start)
     closest_groups = print_artist_recommendations(
         'The Prodigy', wide_artist_data_zero_one, model_nn_binary, k=10)
-
+    print(time.process_time() - start)
     return json.dumps(closest_groups)
 
 
