@@ -8,10 +8,10 @@ from fuzzywuzzy import fuzz
 import pickle
 import time
 
-api = Flask(__name__)
+app = Flask(__name__)
 
 
-@api.route('/knn', methods=['GET'])
+@app.route('/knn', methods=['GET'])
 def get_companies():
     start = time.process_time()
     rus_data = pd.read_table('well.tsv')
@@ -72,10 +72,10 @@ def print_artist_recommendations(query_artist, artist_plays_matrix, knn_model, k
     # return None
 
 
-@api.route('/', methods=['GET'])
+@app.route('/')
 def get_empty():
-	return("")
+    return("")
 
 
 if __name__ == '__main__':
-    api.run()
+    app.run()
