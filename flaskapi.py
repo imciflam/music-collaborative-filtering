@@ -1,5 +1,5 @@
 from flask import Flask, json, request
-import pandas as old_pd
+# import pandas as old_pd
 import numpy as np
 from scipy.sparse import csr_matrix
 from sklearn.neighbors import NearestNeighbors
@@ -8,7 +8,7 @@ from fuzzywuzzy import fuzz
 import pickle
 import time
 from numba import jit
-# import modin.pandas as pd
+import modin.pandas as pd
 
 # os.environ["MODIN_ENGINE"] = "dask"
 
@@ -18,7 +18,7 @@ app = Flask(__name__)
 @app.route('/knn', methods=['GET', 'POST'])
 def get_groups():
     # print(request.json)  # getting json
-    rus_data = old_pd.read_csv('well.tsv', sep='\t')
+    rus_data = pd.read_csv('well.tsv', sep='\t')
     # artists = rows, users = columns
     wide_artist_data_zero_one = data_processing(rus_data)
     model_nn_binary = pickle.load(
