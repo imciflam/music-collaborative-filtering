@@ -1,0 +1,13 @@
+Flask==1.1.1
+fuzzywuzzy==0.17.0
+numba==0.43.0
+numpy==1.16.2
+pandas==0.24.2
+pipenv==2018.11.26
+scikit-learn==0.20.3
+scipy==1.2.1
+sklearn==0.0
+sqlparse==0.3.0
+uvicorn==0.11.1
+virtualenv==16.5.0
+virtualenv-clone==0.5.3
