@@ -29,8 +29,10 @@ def get_groups():
 def data_processing(rus_data):
     start = time.process_time()
     print(time.process_time() - start)
-    wide_artist_data = rus_data.pivot(
-        index='artist-name', columns='users', values='plays').fillna(0)
+    wide_artist_data1 = rus_data.pivot(
+        index='artist-name', columns='users', values='plays')
+    print(time.process_time() - start)
+    wide_artist_data = wide_artist_data1.fillna(0)
     # applying the sign function in numpy to each column in the dataframe
     print(time.process_time() - start)
     wide_artist_data_zero_one = wide_artist_data.apply(np.sign)
