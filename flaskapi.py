@@ -1,4 +1,4 @@
-from flask import Flask, json
+from flask import Flask, json, request
 import pandas as pd
 import numpy as np
 from scipy.sparse import csr_matrix
@@ -11,8 +11,9 @@ import time
 app = Flask(__name__)
 
 
-@app.route('/knn', methods=['GET'])
+@app.route('/knn', methods=['GET', 'POST'])
 def get_companies():
+    print(request.json)  # getting json
     start = time.process_time()
     rus_data = pd.read_table('well.tsv')
     print(time.process_time() - start)
@@ -27,7 +28,7 @@ def get_companies():
         open('nn_model.sav', 'rb'))
     print(time.process_time() - start)
     closest_groups = print_artist_recommendations(
-        'The Prodigy', wide_artist_data_zero_one, model_nn_binary, k=10)
+        request.json[0], wide_artist_data_zero_one, model_nn_binary, k=10)
     print(time.process_time() - start)
     return json.dumps(closest_groups)
 
