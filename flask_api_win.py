@@ -82,7 +82,7 @@ def print_artist_recommendations(query_artist, artist_plays_matrix, knn_model, k
 
 @app.route('/')
 def get_empty():
-    return("")
+    return("base")
 
 
 if __name__ == '__main__':
