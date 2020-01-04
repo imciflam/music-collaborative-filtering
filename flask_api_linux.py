@@ -9,7 +9,7 @@ import pickle
 import time
 from numba import jit
 import modin.pandas as pd
-import pandas as pd_for_pivoting
+# import pandas as pd_for_pivoting
 
 # os.environ["MODIN_ENGINE"] = "dask"
 
@@ -30,7 +30,7 @@ def get_groups():
 @jit()
 def data_processing():
     start = time.process_time()
-    rus_data = pd.read_csv('well.tsv', sep='\t')
+    rus_data = pd.read_csv('well.csv')
     print(time.process_time() - start)
     wide_artist_data_pivoted = rus_data.pivot(
         index='artist-name', columns='users', values='plays')
