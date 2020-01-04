@@ -14,10 +14,7 @@ app = Flask(__name__)
 
 @app.route('/knn', methods=['GET', 'POST'])
 def get_groups():
-    # print(request.json)  # getting json
-    rus_data = pd.read_csv('well.tsv', sep='\t')
-    # artists = rows, users = columns
-    wide_artist_data_zero_one = data_processing(rus_data)
+    wide_artist_data_zero_one = data_processing()
     model_nn_binary = pickle.load(
         open('nn_model.sav', 'rb'))
     closest_groups = print_artist_recommendations(
@@ -26,13 +23,16 @@ def get_groups():
 
 
 @jit()
-def data_processing(rus_data):
+def data_processing():
     start = time.process_time()
+    rus_data = pd.read_csv('well.tsv', sep='\t')
+    #print(time.process_time() - start)
+    #rus_data11 = pd.read_csv('well.csv')
     print(time.process_time() - start)
-    wide_artist_data1 = rus_data.pivot(
+    wide_artist_data_pivoted = rus_data.pivot(
         index='artist-name', columns='users', values='plays')
     print(time.process_time() - start)
-    wide_artist_data = wide_artist_data1.fillna(0)
+    wide_artist_data = wide_artist_data_pivoted.fillna(0)
     # applying the sign function in numpy to each column in the dataframe
     print(time.process_time() - start)
     wide_artist_data_zero_one = wide_artist_data.apply(np.sign)
