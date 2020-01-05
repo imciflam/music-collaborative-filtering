@@ -50,7 +50,7 @@ python-speech-features==0.6
 pytz==2019.3
 PyYAML==5.1
 resampy==0.2.1
-scikit-learn==0.20.3
+scikit-learn==0.21.3
 scipy==1.2.1
 six==1.13.0
 sklearn==0.0
