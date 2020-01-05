@@ -11,12 +11,11 @@ from numba import jit
 
 app = Flask(__name__)
 
-
 @app.route('/knn', methods=['GET', 'POST'])
 def get_groups():
     wide_artist_data_zero_one = data_processing()
     model_nn_binary = pickle.load(
-        open('nn_model.sav', 'rb'))
+        open('finalized_model_short.sav', 'rb'))
     closest_groups = print_artist_recommendations(
         request.json[0], wide_artist_data_zero_one, model_nn_binary, k=10)
     return json.dumps(closest_groups)
@@ -25,7 +24,7 @@ def get_groups():
 @jit()
 def data_processing():
     start = time.process_time()
-    rus_data = pd.read_csv('well.tsv', sep='\t')
+    rus_data = pd.read_csv('short_well.csv')
     #print(time.process_time() - start)
     #rus_data11 = pd.read_csv('well.csv')
     print(time.process_time() - start)
