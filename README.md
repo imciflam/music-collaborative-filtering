@@ -1,5 +1,5 @@
 # music-collaborative-filtering
-collaborative filtering method using k-nearest neighbors algorithm for music recommendation
+collaborative filtering method using k-nearest neighbors algorithm and lastfm-dataset-360K for music recommendation
 
 ### To run locally: 
 install dependencies 
