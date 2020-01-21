@@ -8,16 +8,29 @@ from fuzzywuzzy import fuzz
 import pickle
 from numba import jit
 
-app = Flask(__name__)
 
-@app.route('/knn', methods=['GET', 'POST'])
-def get_groups():
-    wide_artist_data_zero_one = data_processing()
-    model_nn_binary = pickle.load(
-        open('finalized_model_short.sav', 'rb'))
+app = Flask(__name__)
+ 
+
+@app.route('/knnsecond', methods=['GET', 'POST'])
+def get_groupssecond():
+    #wide_artist_data_zero_one = data_processing()
+    #model_nn_binary = pickle.load(
+    #    open('finalized_model_short.sav', 'rb'))
     closest_groups = print_artist_recommendations(
         request.json[0], wide_artist_data_zero_one, model_nn_binary, k=5)
     return json.dumps(closest_groups)
+
+@app.route('/knn', methods=['GET', 'POST'])
+def get_groups():
+    global wide_artist_data_zero_one 
+    wide_artist_data_zero_one = data_processing()
+    global model_nn_binary
+    model_nn_binary = pickle.load(
+        open('finalized_model_short.sav', 'rb'))
+    #closest_groups = print_artist_recommendations(
+      #  request.json[0], wide_artist_data_zero_one, model_nn_binary, k=5)
+    return '0'
 
 
 @jit()
