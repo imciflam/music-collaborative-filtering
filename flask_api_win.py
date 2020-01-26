@@ -1,9 +1,6 @@
 from flask import Flask, json, request
 import pandas as pd
-import numpy as np
-from scipy.sparse import csr_matrix
-from sklearn.neighbors import NearestNeighbors
-from scipy import sparse
+import numpy as np 
 from fuzzywuzzy import fuzz
 import pickle
 from numba import jit
@@ -95,5 +92,5 @@ def main():
 
 
 if __name__ == '__main__':
-    app.run()
     main()
+    app.run()
