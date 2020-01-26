@@ -14,8 +14,16 @@ app = Flask(__name__)
 
 @app.route('/knn', methods=['GET', 'POST'])
 def get_closest_groups():
-    closest_groups = print_artist_recommendations(
-        request.json, wide_artist_data_zero_one, model_nn_binary, k=5)
+    index = 0
+    closest_groups = None
+    while closest_groups == None and index < len(request.json):
+        print(index)
+        closest_groups = print_artist_recommendations(
+            request.json[index], wide_artist_data_zero_one, model_nn_binary, k=5)
+        index = index + 1
+    if closest_groups == None and index == len(request.json):
+        print('no match.')
+
     return json.dumps(closest_groups)
 
 
@@ -40,7 +48,7 @@ def data_processing():
     wide_artist_data_zero_one = wide_artist_data.apply(np.sign)
     return wide_artist_data_zero_one
 
- 
+
 def print_artist_recommendations(query_artist, artist_plays_matrix, knn_model, k):
     query_index = None
     list_of_closest_groups = []
