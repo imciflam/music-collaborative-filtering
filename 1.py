@@ -1,4 +1,7 @@
-from sanic import Sanic, response
+from random import random
+import threading
+import time
+from flask import Flask, json, request
 import pandas as pd
 import numpy as np
 from scipy.sparse import csr_matrix
@@ -8,18 +11,28 @@ from fuzzywuzzy import fuzz
 import pickle
 from numba import jit
 
-app = Sanic(__name__)
+result = None
 
 
-@app.route("/start", methods=["GET"])
-async def get_groups(request):
-    # return json({ "hello": "world" })
-    return response.text('200')
+def background_calculation():
+    print('background_calculation')
+    # here goes some long calculation
+    time.sleep(5)
+
+    # when the calculation is done, the result is stored in a global variable
+    global result
+    result = 42
+    print('result')
 
 
-@app.route("/users", methods=["POST"])
-def create_user(request):
-    return response.text(request.body)
+def main():
+    thread = threading.Thread(target=background_calculation)
+    print('thread start')
+    thread.start()
+    # wait here for the result to be available before continuing
+    thread.join()
+    print('The result is', result)
 
 
-app.run(host="0.0.0.0", port=8000)
+if __name__ == '__main__':
+    main()
