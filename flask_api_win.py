@@ -17,7 +17,6 @@ def get_closest_groups():
     index = 0
     closest_groups = None
     while closest_groups == None and index < len(request.json):
-        print(index)
         closest_groups = print_artist_recommendations(
             request.json[index], wide_artist_data_zero_one, model_nn_binary, k=5)
         index = index + 1
