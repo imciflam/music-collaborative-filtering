@@ -12,30 +12,26 @@ import threading
 import time
 
 app = Flask(__name__)
- 
 
-@app.route('/knnsecond', methods=['GET', 'POST'])
-def get_groupssecond():
-    #wide_artist_data_zero_one = data_processing()
-    #model_nn_binary = pickle.load(
-    #    open('finalized_model_short.sav', 'rb'))
-    closest_groups = print_artist_recommendations(
-        request.json[0], wide_artist_data_zero_one, model_nn_binary, k=5)
-    return json.dumps(closest_groups)
 
 @app.route('/knn', methods=['GET', 'POST'])
-def get_groups():
-    global wide_artist_data_zero_one 
+def get_closest_groups():
+    closest_groups = print_artist_recommendations(
+        request.json, wide_artist_data_zero_one, model_nn_binary, k=5)
+    return json.dumps(closest_groups)
+
+
+def background_calculation():
+    # here goes some long calculation
+    global wide_artist_data_zero_one
     wide_artist_data_zero_one = data_processing()
     global model_nn_binary
     model_nn_binary = pickle.load(
         open('finalized_model_short.sav', 'rb'))
-    #closest_groups = print_artist_recommendations(
-      #  request.json[0], wide_artist_data_zero_one, model_nn_binary, k=5)
-    return '0'
+    global result
+    result = 42
 
 
-@jit()
 def data_processing():
     rus_data = pd.read_csv('short_well.csv')
     wide_artist_data_pivoted = rus_data.pivot(
@@ -56,7 +52,7 @@ def print_artist_recommendations(query_artist, artist_plays_matrix, knn_model, k
             current_query_index = artist_plays_matrix.index.tolist().index(i)
             ratio_tuples.append((i, ratio, current_query_index))
 
-    #print('Possible matches: {0}\n'.format(
+    # print('Possible matches: {0}\n'.format(
     #    [(x[0], x[1]) for x in ratio_tuples]))
 
     try:
@@ -71,7 +67,7 @@ def print_artist_recommendations(query_artist, artist_plays_matrix, knn_model, k
 
     for i in range(0, len(distances.flatten())):
         if i != 0:
-            #print('{0}: {1}, with distance of {2}:'.format(
+            # print('{0}: {1}, with distance of {2}:'.format(
             #    i, artist_plays_matrix.index[indices.flatten()[i]], distances.flatten()[i]))
             # list1[artist_plays_matrix.index[indices.flatten()[i]]] = distances.flatten()[
             #    i]
@@ -85,5 +81,19 @@ def get_empty():
     return("base route")
 
 
+result = None
+
+
+def main():
+    thread = threading.Thread(target=background_calculation)
+    print('thread start')
+    thread.start()
+    # wait here for the result to be available before continuing
+    thread.join()
+    print('The result is', result)
+    print('background_calculation is completed')
+
+
 if __name__ == '__main__':
     app.run()
+    main()
