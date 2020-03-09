@@ -16,11 +16,13 @@ app = Flask(__name__)
 def get_closest_groups():
     index = 0
     closest_groups = None
-    while closest_groups == None and index < len(request.json):
+    input_data = json.loads(request.json)
+    while closest_groups == None and index < len(input_data):
         closest_groups = print_artist_recommendations(
-            request.json[index], wide_artist_data_zero_one, model_nn_binary, k=5)
+            input_data[index], wide_artist_data_zero_one, model_nn_binary, k=5)
         index = index + 1
-    if closest_groups == None and index == len(request.json):
+        print(input_data[index])
+    if closest_groups == None and index == len(input_data):
         print('no match.')
 
     return json.dumps(closest_groups)
@@ -98,4 +100,4 @@ def main():
 
 if __name__ == '__main__':
     main()
-    app.run()
+    app.run(port=5002)
