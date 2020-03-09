@@ -18,11 +18,22 @@ def get_closest_groups():
     closest_groups = []
     input_data = json.loads(request.json)
     for element in input_data:
-        print(element)
-        closest_groups.append(print_artist_recommendations(
+        result = (print_artist_recommendations(
             element, wide_artist_data_zero_one, model_nn_binary, k=5))
+        if result != None:
+            closest_groups.extend(result)
+    # sort groups
+    top_five_to_export = (
+        sorted(closest_groups, key=lambda x: x[1]))
+    # also remove dupes in recommendations
+    visited = set()
+    final_output = []
+    for name, val in top_five_to_export:
+        if not name in visited:
+            visited.add(name)
+            final_output.append((name, val))  # val of probability
 
-    return json.dumps(closest_groups)
+    return json.dumps(final_output[:5])
 
 
 def background_calculation():
@@ -68,7 +79,6 @@ def print_artist_recommendations(query_artist, artist_plays_matrix, knn_model, k
 
     for i in range(0, len(distances.flatten())):
         if i != 0:
-            print(distances.flatten()[i])
             list_of_closest_groups.append(
                 (artist_plays_matrix.index[indices.flatten()[i]], distances.flatten()[i]))
     return list_of_closest_groups
