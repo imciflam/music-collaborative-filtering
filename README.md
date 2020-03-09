@@ -6,7 +6,7 @@ install dependencies
 ```pip3 install -r requirements.txt```
 
 then run
-```python flask_api_win.py```
+```python index.py```
 or
 ```python flask_api_linux.py```
 
