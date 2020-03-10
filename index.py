@@ -31,8 +31,7 @@ def get_closest_groups():
     for name, val in top_five_to_export:
         if not name in visited:
             visited.add(name)
-            final_output.append((name, val))  # val of probability
-    print(final_output)
+            final_output.append((name, val))  # val of probability 
     return json.dumps(final_output)
 
 
