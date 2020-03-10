@@ -19,7 +19,7 @@ def get_closest_groups():
     input_data = json.loads(request.json)
     for element in input_data:
         result = (print_artist_recommendations(
-            element, wide_artist_data_zero_one, model_nn_binary, k=5))
+            element, wide_artist_data_zero_one, model_nn_binary, k=10))
         if result != None:
             closest_groups.extend(result)
     # sort groups
@@ -32,8 +32,8 @@ def get_closest_groups():
         if not name in visited:
             visited.add(name)
             final_output.append((name, val))  # val of probability
-
-    return json.dumps(final_output[:5])
+    print(final_output)
+    return json.dumps(final_output)
 
 
 def background_calculation():
