@@ -1,14 +1,19 @@
 # Collaborative filtering for music recommendation system
-collaborative filtering method using k-nearest neighbors algorithm and lastfm-dataset-360K for music recommendation
+
+### Description: 
+This server is using k-nearest neighbors algorithm to create personal music recommendations utilising cosine distance. Parallel computing is available for Unix machines. Part of Anitra music recommendation system.
 
 ### To run locally: 
-install dependencies 
+1. Install dependencies 
+
 ```pip3 install -r requirements.txt```
 
-then run
+2. Run
+
 ```python index.py```
+
 or
+
 ```python flask_api_linux.py```
 
-then go to
-```http://127.0.0.1:5002/```
+depending on your machine's OS.
