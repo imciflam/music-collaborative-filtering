@@ -1,4 +1,4 @@
-from flask import Flask, json, request
+from flask import Flask, json, request, abort
 import pandas as pd
 import numpy as np
 from fuzzywuzzy import fuzz
@@ -31,7 +31,7 @@ def get_closest_groups():
     for name, val in top_five_to_export:
         if not name in visited:
             visited.add(name)
-            final_output.append((name, val))  # val of probability 
+            final_output.append((name, val))  # val of probability
     return json.dumps(final_output)
 
 
@@ -80,7 +80,10 @@ def print_artist_recommendations(query_artist, artist_plays_matrix, knn_model, k
         if i != 0:
             list_of_closest_groups.append(
                 (artist_plays_matrix.index[indices.flatten()[i]], distances.flatten()[i]))
-    return list_of_closest_groups
+    if list_of_closest_groups == []:
+        abort(500)
+    else:
+        return list_of_closest_groups
 
 
 @app.route('/')
